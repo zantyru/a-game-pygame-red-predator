@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import pygame as pg
 
@@ -18,8 +18,8 @@ SCREEN_SIZE = pg.Vector2(800.0, 600.0)
 class Entity:
     color: pg.Color = COLOR_DEFAULT
     speed: float = 0.0
-    position: pg.Vector2 = pg.Vector2()
-    dposition: pg.Vector2 = pg.Vector2()
+    position: pg.Vector2 = field(default_factory=pg.Vector2)
+    dposition: pg.Vector2 = field(default_factory=pg.Vector2)
 
 
 def start():
