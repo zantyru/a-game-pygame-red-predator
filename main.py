@@ -1,5 +1,6 @@
-from random import random as get_random_float
+import enum  # Ожидается Python 3.11+
 from dataclasses import dataclass, field
+from random import random as get_random_float
 
 import pygame as pg
 
@@ -7,22 +8,28 @@ import pygame as pg
 TARGET_FPS = 60
 MILLISECONDS_PER_SECOND = 1000
 
-COLOR_DEFAULT = "black"
-COLOR_PLAYER = "red"
-COLOR_FOOD = "green"
-COLOR_BACKGROUND = "#f0f8f0"
-
 SCREEN_SIZE = pg.Vector2(800.0, 600.0)
 
-ENTITY_TYPE_STATIC = 0
-ENTITY_TYPE_PLAYER = 1
-ENTITY_TYPE_FOOD = 2
+
+@enum.unique
+class COLOR_CODE(enum.StrEnum):
+    DEFAULT = "black"
+    PLAYER = "red"
+    FOOD = "green"
+    BACKGROUND = "#f0f8f0"
+
+
+@enum.unique
+class ENTITY_TYPE(enum.Enum):
+    STATIC = enum.auto()
+    PLAYER = enum.auto()
+    FOOD = enum.auto()
 
 
 @dataclass
 class Entity:
-    type: int = ENTITY_TYPE_STATIC
-    color: pg.Color = COLOR_DEFAULT
+    type: ENTITY_TYPE = ENTITY_TYPE.STATIC
+    color: pg.Color = field(default_factory=pg.Color(COLOR_CODE.DEFAULT))
     speed: float = 0.0
     position: pg.Vector2 = field(default_factory=pg.Vector2)
     dposition: pg.Vector2 = field(default_factory=pg.Vector2)
@@ -101,8 +108,8 @@ def start():
     dt = 0.0
     
     entity_player = Entity(
-        type=ENTITY_TYPE_PLAYER,
-        color=COLOR_PLAYER,
+        type=ENTITY_TYPE.PLAYER,
+        color=pg.Color(COLOR_CODE.PLAYER),
         speed=100.0,
         position=SCREEN_SIZE * 0.5,
     )
@@ -110,41 +117,41 @@ def start():
     entities = [
         entity_player,
         Entity(
-            type=ENTITY_TYPE_FOOD,
-            color=COLOR_FOOD,
+            type=ENTITY_TYPE.FOOD,
+            color=pg.Color(COLOR_CODE.FOOD),
             speed=300.0,
             position=SCREEN_SIZE * get_random_float(),
         ),
         Entity(
-            type=ENTITY_TYPE_FOOD,
-            color=COLOR_FOOD,
+            type=ENTITY_TYPE.FOOD,
+            color=pg.Color(COLOR_CODE.FOOD),
             speed=300.0,
             position=SCREEN_SIZE * get_random_float(),
         ),
         Entity(
-            type=ENTITY_TYPE_FOOD,
-            color=COLOR_FOOD,
+            type=ENTITY_TYPE.FOOD,
+            color=pg.Color(COLOR_CODE.FOOD),
             speed=300.0,
             position=SCREEN_SIZE * get_random_float(),
         ),
     ]
     
     draw_functions_by_entity_type = {
-        ENTITY_TYPE_STATIC: draw_entity_static,
-        ENTITY_TYPE_PLAYER: draw_entity_player,
-        ENTITY_TYPE_FOOD: draw_entity_food,
+        ENTITY_TYPE.STATIC: draw_entity_static,
+        ENTITY_TYPE.PLAYER: draw_entity_player,
+        ENTITY_TYPE.FOOD: draw_entity_food,
     }
     
     update_functions_by_entity_type = {
-        ENTITY_TYPE_STATIC: update_entity_static,
-        ENTITY_TYPE_PLAYER: update_entity_player,
-        ENTITY_TYPE_FOOD: update_entity_food,
+        ENTITY_TYPE.STATIC: update_entity_static,
+        ENTITY_TYPE.PLAYER: update_entity_player,
+        ENTITY_TYPE.FOOD: update_entity_food,
     }
     
     while is_gameplay:
         
         # - Отрисовка -
-        surface_screen.fill(COLOR_BACKGROUND)
+        surface_screen.fill(COLOR_CODE.BACKGROUND)
         
         for entity in entities:
             draw_functions_by_entity_type[entity.type](surface_screen, entity)
