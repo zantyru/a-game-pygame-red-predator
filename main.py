@@ -12,7 +12,7 @@ SCREEN_SIZE = pg.Vector2(800.0, 600.0)
 
 
 @enum.unique
-class COLOR_CODE(enum.StrEnum):
+class ColorEnum(enum.StrEnum):
     DEFAULT = "black"
     PLAYER = "red"
     FOOD = "green"
@@ -20,7 +20,7 @@ class COLOR_CODE(enum.StrEnum):
 
 
 @enum.unique
-class ENTITY_TYPE(enum.Enum):
+class EntityEnum(enum.Enum):
     STATIC = enum.auto()
     PLAYER = enum.auto()
     FOOD = enum.auto()
@@ -28,8 +28,8 @@ class ENTITY_TYPE(enum.Enum):
 
 @dataclass
 class Entity:
-    type: ENTITY_TYPE = ENTITY_TYPE.STATIC
-    color: pg.Color = field(default_factory=pg.Color(COLOR_CODE.DEFAULT))
+    type: EntityEnum = EntityEnum.STATIC
+    color: pg.Color = field(default_factory=pg.Color(ColorEnum.DEFAULT))
     speed: float = 0.0
     position: pg.Vector2 = field(default_factory=pg.Vector2)
     dposition: pg.Vector2 = field(default_factory=pg.Vector2)
@@ -108,8 +108,8 @@ def start():
     dt = 0.0
     
     entity_player = Entity(
-        type=ENTITY_TYPE.PLAYER,
-        color=pg.Color(COLOR_CODE.PLAYER),
+        type=EntityEnum.PLAYER,
+        color=pg.Color(ColorEnum.PLAYER),
         speed=100.0,
         position=SCREEN_SIZE * 0.5,
     )
@@ -117,41 +117,41 @@ def start():
     entities = [
         entity_player,
         Entity(
-            type=ENTITY_TYPE.FOOD,
-            color=pg.Color(COLOR_CODE.FOOD),
+            type=EntityEnum.FOOD,
+            color=pg.Color(ColorEnum.FOOD),
             speed=300.0,
             position=SCREEN_SIZE * get_random_float(),
         ),
         Entity(
-            type=ENTITY_TYPE.FOOD,
-            color=pg.Color(COLOR_CODE.FOOD),
+            type=EntityEnum.FOOD,
+            color=pg.Color(ColorEnum.FOOD),
             speed=300.0,
             position=SCREEN_SIZE * get_random_float(),
         ),
         Entity(
-            type=ENTITY_TYPE.FOOD,
-            color=pg.Color(COLOR_CODE.FOOD),
+            type=EntityEnum.FOOD,
+            color=pg.Color(ColorEnum.FOOD),
             speed=300.0,
             position=SCREEN_SIZE * get_random_float(),
         ),
     ]
     
     draw_functions_by_entity_type = {
-        ENTITY_TYPE.STATIC: draw_entity_static,
-        ENTITY_TYPE.PLAYER: draw_entity_player,
-        ENTITY_TYPE.FOOD: draw_entity_food,
+        EntityEnum.STATIC: draw_entity_static,
+        EntityEnum.PLAYER: draw_entity_player,
+        EntityEnum.FOOD: draw_entity_food,
     }
     
     update_functions_by_entity_type = {
-        ENTITY_TYPE.STATIC: update_entity_static,
-        ENTITY_TYPE.PLAYER: update_entity_player,
-        ENTITY_TYPE.FOOD: update_entity_food,
+        EntityEnum.STATIC: update_entity_static,
+        EntityEnum.PLAYER: update_entity_player,
+        EntityEnum.FOOD: update_entity_food,
     }
     
     while is_gameplay:
         
         # - Отрисовка -
-        surface_screen.fill(COLOR_CODE.BACKGROUND)
+        surface_screen.fill(ColorEnum.BACKGROUND)
         
         for entity in entities:
             draw_functions_by_entity_type[entity.type](surface_screen, entity)
