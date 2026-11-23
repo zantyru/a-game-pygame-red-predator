@@ -1,3 +1,4 @@
+from random import random as get_random_float
 from dataclasses import dataclass, field
 
 import pygame as pg
@@ -39,7 +40,17 @@ def draw_entity_player(surface: pg.Surface, player: Entity) -> None:
         center=player.position,
         radius=20,  #@TODO Убрать магическое число
     )
+
+
+def draw_entity_food(surface: pg.Surface, food: Entity) -> None:
     
+    pg.draw.circle(
+        surface=surface,
+        color=food.color,
+        center=food.position,
+        radius=10,  #@TODO Убрать магическое число
+    )
+
 
 def update_entity_static(dt: float, player: Entity) -> None:
     pass
@@ -70,6 +81,17 @@ def update_entity_player(dt: float, player: Entity) -> None:
     player.position += player.speed * player.dposition * dt
 
 
+def update_entity_food(dt: float, food: Entity) -> None:
+    
+    food.dposition.x = get_random_float() * 2.0 - 1.0
+    food.dposition.y = get_random_float() * 2.0 - 1.0
+        
+    if food.dposition.x or food.dposition.y:
+        food.dposition.normalize_ip()
+    
+    food.position += food.speed * food.dposition * dt
+
+
 def start():
     
     pg.init()
@@ -87,18 +109,36 @@ def start():
     
     entities = [
         entity_player,
+        Entity(
+            type=ENTITY_TYPE_FOOD,
+            color=COLOR_FOOD,
+            speed=300.0,
+            position=SCREEN_SIZE * get_random_float(),
+        ),
+        Entity(
+            type=ENTITY_TYPE_FOOD,
+            color=COLOR_FOOD,
+            speed=300.0,
+            position=SCREEN_SIZE * get_random_float(),
+        ),
+        Entity(
+            type=ENTITY_TYPE_FOOD,
+            color=COLOR_FOOD,
+            speed=300.0,
+            position=SCREEN_SIZE * get_random_float(),
+        ),
     ]
     
     draw_functions_by_entity_type = {
         ENTITY_TYPE_STATIC: draw_entity_static,
         ENTITY_TYPE_PLAYER: draw_entity_player,
-        ENTITY_TYPE_FOOD: draw_entity_static,  #@TODO Написать свою функцию
+        ENTITY_TYPE_FOOD: draw_entity_food,
     }
     
     update_functions_by_entity_type = {
         ENTITY_TYPE_STATIC: update_entity_static,
         ENTITY_TYPE_PLAYER: update_entity_player,
-        ENTITY_TYPE_FOOD: update_entity_static,  #@TODO Написать свою функцию
+        ENTITY_TYPE_FOOD: update_entity_food,
     }
     
     while is_gameplay:
